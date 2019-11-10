@@ -3,6 +3,7 @@ using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Miscellaneous.Foundation;
 using System.IO;
 
 namespace ThirdPartyMediator
@@ -35,6 +36,7 @@ namespace ThirdPartyMediator
                 DisableGlobalLocks = true
             }));
 
+            Settings.Database.Connection = Configuration["ConnectionStrings:HangfireConnection"];
             // Add the processing server as IHostedService
             services.AddHangfireServer();
             services.AddMvc();

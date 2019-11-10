@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using Services;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -18,9 +19,19 @@ namespace ThirdPartyMediator.API
         [Route("initiate")]
         [HttpGet]
         public void Index() {
-            
+            DailyJob tp = new DailyJob();
+            t = new Thread(tp.Start);
+            t.Start();
         }
 
-        
+        [Route("recoverplants")]
+        [HttpPost]
+        public void recover()
+        {
+            //DailyJob tp = new DailyJob();
+            //t = new Thread(tp.Start);
+            //t.Start();
+        }
+
     }
 }
