@@ -41,8 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IServiceHandler.cs" />
+    <Compile Include="Mediator\IDailyJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mediator\DailyJob.cs" />
+    <Compile Include="ServiceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">

@@ -4,15 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Mediator
 {
-    public class DailyJob
+    public class DailyJob :  IDailyJob
     {
         private readonly IGraphRepository _graph;
-        public DailyJob() {
-            _graph = new GraphRepository();
+        public DailyJob(IGraphRepository graph) {
+            _graph = graph;
         }
         public void Start() {
             

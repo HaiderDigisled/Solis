@@ -12,15 +12,16 @@ namespace ThirdPartyMediator.API
     public class JobController
     {
         Thread t;
-        public JobController() {
-            
+        private readonly IServiceHandler _handler;
+        public JobController(IServiceHandler handler) {
+            _handler = handler;
         }
 
         [Route("initiate")]
         [HttpGet]
         public void Index() {
-            DailyJob tp = new DailyJob();
-            t = new Thread(tp.Start);
+            
+            t = new Thread(_handler.ThirdPartyHandler);
             t.Start();
         }
 

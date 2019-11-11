@@ -1,9 +1,13 @@
-﻿using Hangfire;
+﻿using Data.Contracts;
+using Data.Repository;
+using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Miscellaneous.Foundation;
+using Services;
+using Services.Mediator;
 using System.IO;
 
 namespace ThirdPartyMediator
@@ -37,6 +41,16 @@ namespace ThirdPartyMediator
             }));
 
             Settings.Database.Connection = Configuration["ConnectionStrings:HangfireConnection"];
+
+            // service DI
+            services.AddScoped<IServiceHandler, ServiceHandler>();
+
+            // handlers DI
+            services.AddScoped<IDailyJob, DailyJob>();
+
+            // repository DI
+            services.AddScoped<IGraphRepository, GraphRepository>();
+            
             // Add the processing server as IHostedService
             services.AddHangfireServer();
             services.AddMvc();
