@@ -12,20 +12,26 @@ namespace Services.Mediator
     public class DailyJob :  IDailyJob
     {
         private readonly IGraphRepository _graph;
+        private readonly IVendorRepository _vendors;
+
         private VendorFactory Factory;
         private VendorBase Vendor;
-        public DailyJob(IGraphRepository graph) {
+
+        public DailyJob(IVendorRepository vendors,IGraphRepository graph) {
+            _vendors = vendors;
             _graph = graph;
         }
+
         public void Start() {
-            string[] arr = { "g", "s" };
-            foreach (var i in arr) {
-                switch (i) {
-                    case "g":
-                        Factory = new GrowWattFactory();
+
+            var allvendors = _vendors.GetVendors();
+            foreach (var vendor in allvendors) {
+                switch (vendor.Name) {
+                    case "GrowWatt":
+                        Factory = new GrowWattFactory(_graph);
                         break;
-                    case "s":
-                        Factory = new SunGrowFactory();
+                    case "SunGrow":
+                        Factory = new SunGrowFactory(_graph);
                         break;
                 }
 

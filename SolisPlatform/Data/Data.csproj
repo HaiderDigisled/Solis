@@ -68,10 +68,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IGraphRepository.cs" />
+    <Compile Include="Contracts\IVendorRepository.cs" />
     <Compile Include="Dapper\DapperManager.cs" />
+    <Compile Include="DTO\StoredProcedures.cs" />
     <Compile Include="Model\EnergyGraph.cs" />
+    <Compile Include="Model\Vendors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\GraphRepository.cs" />
+    <Compile Include="Repository\VendorRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Foundation\Foundation.csproj">
@@ -83,7 +87,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DTO\" />
     <Folder Include="Enums\" />
     <Folder Include="Mappers\" />
   </ItemGroup>

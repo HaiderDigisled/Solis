@@ -50,6 +50,7 @@ namespace ThirdPartyMediator
 
             // repository DI
             services.AddScoped<IGraphRepository, GraphRepository>();
+            services.AddScoped<IVendorRepository, VendorRepository>();
             
             // Add the processing server as IHostedService
             services.AddHangfireServer();
