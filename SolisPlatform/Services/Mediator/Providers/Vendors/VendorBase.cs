@@ -8,6 +8,8 @@ namespace Services.Mediator.Providers.Vendors
 {
     public abstract class VendorBase
     {
-        public abstract void RecoverGraphData();
+        public abstract void GetPlants();
+        public abstract void SaveAPIResponses();
+        public abstract void SaveEnergyGraph();
     }
 }

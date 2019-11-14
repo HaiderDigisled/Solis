@@ -9,5 +9,7 @@ namespace Data.DTO
     public static class StoredProcedures
     {
         public const string GetVendors = "GetVendors";
+        public const string GetPlants = "V1_GetPlantIds";
+        public const string PopulateAPISuccessResponses = "InsertAPISuccessResponse";
     }
 }

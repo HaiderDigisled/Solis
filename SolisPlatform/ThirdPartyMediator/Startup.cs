@@ -1,5 +1,9 @@
 ﻿using Data.Contracts;
+using Data.Contracts.GrowWatt;
+using Data.Contracts.SunGrow;
 using Data.Repository;
+using Data.Repository.GrowWatt;
+using Data.Repository.SunGrow;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +55,8 @@ namespace ThirdPartyMediator
             // repository DI
             services.AddScoped<IGraphRepository, GraphRepository>();
             services.AddScoped<IVendorRepository, VendorRepository>();
+            services.AddScoped<ISunGrowRepository, SunGrowRepository>();
+            services.AddScoped<IGrowWattRepository, GrowWattRepository>();
             
             // Add the processing server as IHostedService
             services.AddHangfireServer();

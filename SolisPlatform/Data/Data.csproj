@@ -67,14 +67,21 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\GrowWatt\IGrowWattRepository.cs" />
     <Compile Include="Contracts\IGraphRepository.cs" />
     <Compile Include="Contracts\IVendorRepository.cs" />
+    <Compile Include="Contracts\SunGrow\ISunGrowRepository.cs" />
     <Compile Include="Dapper\DapperManager.cs" />
     <Compile Include="DTO\StoredProcedures.cs" />
+    <Compile Include="Model\APISuccessResponses.cs" />
     <Compile Include="Model\EnergyGraph.cs" />
+    <Compile Include="Model\GrowWattPlantInformation.cs" />
+    <Compile Include="Model\SunGrowPlantInformation.cs" />
     <Compile Include="Model\Vendors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\GraphRepository.cs" />
+    <Compile Include="Repository\GrowWatt\GrowWattRepository.cs" />
+    <Compile Include="Repository\SunGrow\SunGrowRepository.cs" />
     <Compile Include="Repository\VendorRepository.cs" />
   </ItemGroup>
   <ItemGroup>

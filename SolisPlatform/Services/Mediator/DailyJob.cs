@@ -1,4 +1,6 @@
 ﻿using Data.Contracts;
+using Data.Contracts.GrowWatt;
+using Data.Contracts.SunGrow;
 using Data.Repository;
 using Services.Mediator.Factory.Vendors;
 using Services.Mediator.Providers.Vendors;
@@ -13,13 +15,17 @@ namespace Services.Mediator
     {
         private readonly IGraphRepository _graph;
         private readonly IVendorRepository _vendors;
+        private readonly IGrowWattRepository _growWatt;
+        private readonly ISunGrowRepository _sunGrow;
 
         private VendorFactory Factory;
         private VendorBase Vendor;
 
-        public DailyJob(IVendorRepository vendors,IGraphRepository graph) {
+        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt) {
             _vendors = vendors;
             _graph = graph;
+            _sunGrow = sunGrow;
+            _growWatt = growWatt;
         }
 
         public void Start() {
@@ -28,15 +34,17 @@ namespace Services.Mediator
             foreach (var vendor in allvendors) {
                 switch (vendor.Name) {
                     case "GrowWatt":
-                        Factory = new GrowWattFactory(_graph);
+                        Factory = new GrowWattFactory(_graph,_growWatt);
                         break;
                     case "SunGrow":
-                        Factory = new SunGrowFactory(_graph);
+                        Factory = new SunGrowFactory(_graph,_sunGrow);
                         break;
                 }
 
                 Vendor = Factory.Create();
-                Vendor.RecoverGraphData();
+                Vendor.GetPlants();
+                Vendor.SaveAPIResponses();
+                Vendor.SaveEnergyGraph();
 
             }
         }

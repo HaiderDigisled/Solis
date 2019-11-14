@@ -9,5 +9,6 @@ namespace Data.Contracts
 {
     public interface IGraphRepository
     {
+        void InsertGraphStats(List<APISuccessResponses> apiresponse);
     }
 }
