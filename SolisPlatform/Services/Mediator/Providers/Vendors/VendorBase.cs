@@ -10,6 +10,6 @@ namespace Services.Mediator.Providers.Vendors
     {
         public abstract void GetPlants();
         public abstract void SaveAPIResponses();
-        public abstract void SaveEnergyGraph();
+        public abstract void SaveEnergyGraph(string VendorName);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Data.Contracts;
 using Data.Contracts.GrowWatt;
+using Data.Mappers;
 using Data.Model;
 using Foundation;
 using RestSharp;
@@ -18,6 +19,7 @@ namespace Services.Mediator.Providers.Vendors
         private Helper helper;
         private IEnumerable<int> PlantIds;
         private List<APISuccessResponses> apiresponses;
+        private EnergyGraphMapper mapper;
 
 
         public GrowWattProvider(IGraphRepository graph,IGrowWattRepository growWatt) {
@@ -25,6 +27,7 @@ namespace Services.Mediator.Providers.Vendors
             _growWatt = growWatt;
             helper = new Helper();
             apiresponses = new List<APISuccessResponses>();
+            mapper = new EnergyGraphMapper();
         }
 
         public override void GetPlants()
@@ -32,9 +35,13 @@ namespace Services.Mediator.Providers.Vendors
             PlantIds = _growWatt.GetGrowWattPlants();
         }
 
-        public override void SaveEnergyGraph()
+        public override void SaveEnergyGraph(string Vendor)
         {
-            Console.WriteLine("GrowWatt Recovery");
+            Console.WriteLine($"Mapping Responses for {Vendor} to EnergyGraph");
+            var responses = _graph.GetGraphResponses(Vendor);
+            var graphValues = mapper.Map(responses.ToList(), Vendor);
+            _graph.InsertGraph(graphValues);
+            Console.WriteLine($"Responses Mapped");
         }
 
         public override void SaveAPIResponses()

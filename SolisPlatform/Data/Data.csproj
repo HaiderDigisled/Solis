@@ -37,6 +37,10 @@
     <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.configuration.abstractions\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -72,7 +76,9 @@
     <Compile Include="Contracts\IVendorRepository.cs" />
     <Compile Include="Contracts\SunGrow\ISunGrowRepository.cs" />
     <Compile Include="Dapper\DapperManager.cs" />
+    <Compile Include="DTO\GraphDTO.cs" />
     <Compile Include="DTO\StoredProcedures.cs" />
+    <Compile Include="Mappers\EnergyGraphMapper.cs" />
     <Compile Include="Model\APISuccessResponses.cs" />
     <Compile Include="Model\EnergyGraph.cs" />
     <Compile Include="Model\GrowWattPlantInformation.cs" />
@@ -95,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
-    <Folder Include="Mappers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

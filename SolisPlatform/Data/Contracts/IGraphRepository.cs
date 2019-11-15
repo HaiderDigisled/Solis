@@ -10,5 +10,7 @@ namespace Data.Contracts
     public interface IGraphRepository
     {
         void InsertGraphStats(List<APISuccessResponses> apiresponse);
+        IEnumerable<APISuccessResponses> GetGraphResponses(string provider);
+        void InsertGraph(IEnumerable<EnergyGraph> graph);
     }
 }

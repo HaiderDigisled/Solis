@@ -24,7 +24,7 @@ namespace Services.Mediator.Providers.Vendors
             PlantIds = _sungrow.GetSunGrowPlants();
         }
 
-        public override void SaveEnergyGraph()
+        public override void SaveEnergyGraph(string Vendor)
         {
             Console.WriteLine("SunGrow Recovery");
         }

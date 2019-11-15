@@ -42,9 +42,9 @@ namespace Services.Mediator
                 }
 
                 Vendor = Factory.Create();
-                Vendor.GetPlants();
-                Vendor.SaveAPIResponses();
-                Vendor.SaveEnergyGraph();
+                //Vendor.GetPlants();
+                //Vendor.SaveAPIResponses();
+                Vendor.SaveEnergyGraph(vendor.Name);
 
             }
         }
