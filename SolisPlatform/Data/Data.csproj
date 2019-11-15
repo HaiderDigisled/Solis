@@ -78,10 +78,12 @@
     <Compile Include="Dapper\DapperManager.cs" />
     <Compile Include="DTO\GraphDTO.cs" />
     <Compile Include="DTO\StoredProcedures.cs" />
+    <Compile Include="Enums\SunGrowMethods.cs" />
     <Compile Include="Mappers\EnergyGraphMapper.cs" />
     <Compile Include="Model\APISuccessResponses.cs" />
     <Compile Include="Model\EnergyGraph.cs" />
     <Compile Include="Model\GrowWattPlantInformation.cs" />
+    <Compile Include="Model\LoginRestApiDTO.cs" />
     <Compile Include="Model\SunGrowPlantInformation.cs" />
     <Compile Include="Model\Vendors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,8 +101,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

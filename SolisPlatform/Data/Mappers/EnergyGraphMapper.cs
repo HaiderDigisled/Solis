@@ -33,40 +33,43 @@ namespace Data.Mappers
             {
                 Console.WriteLine($"Processing Plant : {resp.plantId}");
                 var Response = JsonConvert.DeserializeObject<SunGrowGraphDTO>(resp.response);
-                if (Response.result_data.time_flag.Equals("2"))
+                if (Response.result_data.time_flag != null)
                 {
-                    foreach (var x in Response.result_data.actual_energy.Select((energy, day) => new { day, energy }))
+                    if (Response.result_data.time_flag.Equals("2"))
                     {
-                        int _day = 1 + x.day;
-                        graph.Add(new EnergyGraph()
+                        foreach (var x in Response.result_data.actual_energy.Select((energy, day) => new { day, energy }))
                         {
-                            Day = String.Concat(DateTime.Now.Year, "-", DateTime.Now.Month, "-", _day >= 10 ? _day.ToString() : string.Concat("0", _day.ToString())),
-                            Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
-                            Month = "NA",
-                            plantid = Convert.ToInt32(resp.plantId),
-                            Provider = "SunGrow",
-                            timeunit = "day",
-                            fetchDate = DateTime.Now,
-                            Year = DateTime.Now.Year.ToString()
-                        });
+                            int _day = 1 + x.day;
+                            graph.Add(new EnergyGraph()
+                            {
+                                Day = String.Concat(DateTime.Now.Year, "-", DateTime.Now.Month, "-", _day >= 10 ? _day.ToString() : string.Concat("0", _day.ToString())),
+                                Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
+                                Month = "NA",
+                                plantid = Convert.ToInt32(resp.plantId),
+                                Provider = "SunGrow",
+                                timeunit = "day",
+                                fetchDate = DateTime.Now,
+                                Year = DateTime.Now.Year.ToString()
+                            });
+                        }
                     }
-                }
-                if (Response.result_data.time_flag.Equals("1"))
-                {
-                    foreach (var x in Response.result_data.actual_energy.Select((energy, month) => new { month, energy }))
+                    if (Response.result_data.time_flag.Equals("1"))
                     {
-                        int _month = 1 + x.month;
-                        graph.Add(new EnergyGraph()
+                        foreach (var x in Response.result_data.actual_energy.Select((energy, month) => new { month, energy }))
                         {
-                            Month = String.Concat(DateTime.Now.Year.ToString(), "-", _month >= 10 ? _month.ToString() : String.Concat("0", _month.ToString())),
-                            Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
-                            Day = "NA",
-                            plantid = Convert.ToInt32(resp.plantId),
-                            Provider = "SunGrow",
-                            timeunit = "month",
-                            fetchDate = DateTime.Now,
-                            Year = DateTime.Now.Year.ToString()
-                        });
+                            int _month = 1 + x.month;
+                            graph.Add(new EnergyGraph()
+                            {
+                                Month = String.Concat(DateTime.Now.Year.ToString(), "-", _month >= 10 ? _month.ToString() : String.Concat("0", _month.ToString())),
+                                Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
+                                Day = "NA",
+                                plantid = Convert.ToInt32(resp.plantId),
+                                Provider = "SunGrow",
+                                timeunit = "month",
+                                fetchDate = DateTime.Now,
+                                Year = DateTime.Now.Year.ToString()
+                            });
+                        }
                     }
                 }
             }

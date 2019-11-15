@@ -29,7 +29,7 @@ namespace Services.Mediator
         }
 
         public void Start() {
-
+            Console.WriteLine("***************Daily Job Started***************");
             var allvendors = _vendors.GetVendors();
             foreach (var vendor in allvendors) {
                 switch (vendor.Name) {
@@ -42,10 +42,10 @@ namespace Services.Mediator
                 }
 
                 Vendor = Factory.Create();
-                //Vendor.GetPlants();
-                //Vendor.SaveAPIResponses();
+                Vendor.GetPlants();
+                Vendor.SaveAPIResponses();
                 Vendor.SaveEnergyGraph(vendor.Name);
-
+                Console.WriteLine("***************Daily Job End***************");
             }
         }
     }
