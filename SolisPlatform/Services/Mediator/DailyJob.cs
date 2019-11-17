@@ -42,9 +42,14 @@ namespace Services.Mediator
                 }
 
                 Vendor = Factory.Create();
+
+                #region Energy Graph Recovery
                 Vendor.GetPlants();
                 Vendor.SaveAPIResponses();
                 Vendor.SaveEnergyGraph(vendor.Name);
+                # endregion
+
+
                 Console.WriteLine("***************Daily Job End***************");
             }
         }
