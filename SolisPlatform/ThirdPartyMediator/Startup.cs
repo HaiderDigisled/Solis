@@ -57,6 +57,7 @@ namespace ThirdPartyMediator
             services.AddScoped<IVendorRepository, VendorRepository>();
             services.AddScoped<ISunGrowRepository, SunGrowRepository>();
             services.AddScoped<IGrowWattRepository, GrowWattRepository>();
+            services.AddScoped<IMiscRepository, MiscRepository>();
             
             // Add the processing server as IHostedService
             services.AddHangfireServer();

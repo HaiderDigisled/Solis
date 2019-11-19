@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Data.DTO;
+using Hangfire;
+using System.Net;
 
 namespace ThirdPartyMediator.API
 {
@@ -25,13 +28,12 @@ namespace ThirdPartyMediator.API
             t.Start();
         }
 
-        [Route("recoverplants")]
+        [Route("createrecurringjob")]
         [HttpPost]
-        public void recover()
+        public void recover([FromBody]RecurringJobDTO job)
         {
-            //DailyJob tp = new DailyJob();
-            //t = new Thread(tp.Start);
-            //t.Start();
+            RecurringJob.AddOrUpdate("Half Hourly Job",() => JobBuilder.TriggerUserJob(
+                job.BaseUrl, job.Method, job.Model),job.CronExpression);
         }
 
     }

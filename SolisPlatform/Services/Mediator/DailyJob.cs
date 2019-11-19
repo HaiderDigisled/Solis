@@ -17,15 +17,17 @@ namespace Services.Mediator
         private readonly IVendorRepository _vendors;
         private readonly IGrowWattRepository _growWatt;
         private readonly ISunGrowRepository _sunGrow;
+        private readonly IMiscRepository _misc;
 
         private VendorFactory Factory;
         private VendorBase Vendor;
 
-        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt) {
+        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt,IMiscRepository misc) {
             _vendors = vendors;
             _graph = graph;
             _sunGrow = sunGrow;
             _growWatt = growWatt;
+            _misc = misc;
         }
 
         public void Start() {
@@ -47,11 +49,15 @@ namespace Services.Mediator
                 Vendor.GetPlants();
                 Vendor.SaveAPIResponses();
                 Vendor.SaveEnergyGraph(vendor.Name);
-                # endregion
+                #endregion
 
-
-                Console.WriteLine("***************Daily Job End***************");
             }
+
+            #region Ranking
+            _misc.CalculateRanking();
+            #endregion
+
+            Console.WriteLine("***************Daily Job End***************");
         }
     }
 }

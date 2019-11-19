@@ -73,10 +73,12 @@
   <ItemGroup>
     <Compile Include="Contracts\GrowWatt\IGrowWattRepository.cs" />
     <Compile Include="Contracts\IGraphRepository.cs" />
+    <Compile Include="Contracts\IMiscRepository.cs" />
     <Compile Include="Contracts\IVendorRepository.cs" />
     <Compile Include="Contracts\SunGrow\ISunGrowRepository.cs" />
     <Compile Include="Dapper\DapperManager.cs" />
     <Compile Include="DTO\GraphDTO.cs" />
+    <Compile Include="DTO\RecurringJobDTO.cs" />
     <Compile Include="DTO\StoredProcedures.cs" />
     <Compile Include="Enums\SunGrowMethods.cs" />
     <Compile Include="Mappers\EnergyGraphMapper.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\GraphRepository.cs" />
     <Compile Include="Repository\GrowWatt\GrowWattRepository.cs" />
+    <Compile Include="Repository\MiscRepository.cs" />
     <Compile Include="Repository\SunGrow\SunGrowRepository.cs" />
     <Compile Include="Repository\VendorRepository.cs" />
   </ItemGroup>
