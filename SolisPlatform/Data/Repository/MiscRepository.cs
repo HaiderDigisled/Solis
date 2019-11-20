@@ -17,8 +17,16 @@ namespace Data.Repository
         }
         public void CalculateRanking()
         {
-            dapper.Execute<bool>(StoredProcedures.CalculateRanking, null, null, true, null, System.Data.CommandType.StoredProcedure);
-            Console.WriteLine("Ranking Calculated");
+            try
+            {
+                dapper.Execute<bool>(StoredProcedures.CalculateRanking, null, null, true, null, System.Data.CommandType.StoredProcedure);
+                Console.WriteLine("Ranking Calculated");
+            }
+            catch (Exception ex) {
+                ex.Data["MethodAndClass"] = "CalculateRanking() in MiscRepository";
+                throw ex;
+            }
+            
         }
     }
 }

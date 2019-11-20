@@ -20,11 +20,19 @@ namespace Data.Repository.SunGrow
         }
         public IEnumerable<int> GetSunGrowPlants()
         {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@FromTable", "SunGrowPlantInformation");
-            parameters.Add("@ColumnName", "PowerStationId");
-            var plants = dapper.Get<SunGrowPlantInformation>(StoredProcedures.GetPlants, parameters, null, true, null, System.Data.CommandType.StoredProcedure);
-            return plants.Select(x => x.PowerStationId);
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@FromTable", "SunGrowPlantInformation");
+                parameters.Add("@ColumnName", "PowerStationId");
+                var plants = dapper.Get<SunGrowPlantInformation>(StoredProcedures.GetPlants, parameters, null, true, null, System.Data.CommandType.StoredProcedure);
+                return plants.Select(x => x.PowerStationId);
+            }
+            catch (Exception ex) {
+                ex.Data["MethodAndClass"] = "GetSunGrowPlants() in SunGrowRepository";
+                throw ex;
+            }
+            
         }
     }
 }

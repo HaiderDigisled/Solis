@@ -15,5 +15,9 @@ namespace Miscellaneous.Foundation
         public static class Database {
             public static string Connection { get; set; }
         }
+
+        public static class FailureAlerts {
+            public static string InternalRecipients { get; set; }
+        }
     }
 }

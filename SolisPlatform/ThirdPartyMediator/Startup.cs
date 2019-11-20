@@ -45,7 +45,7 @@ namespace ThirdPartyMediator
             }));
 
             Settings.Database.Connection = Configuration["ConnectionStrings:HangfireConnection"];
-
+            Settings.FailureAlerts.InternalRecipients = Configuration["Alerts:Failure:InternalRecipients"];
             // service DI
             services.AddScoped<IServiceHandler, ServiceHandler>();
 

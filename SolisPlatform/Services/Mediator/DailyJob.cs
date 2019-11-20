@@ -2,6 +2,7 @@
 using Data.Contracts.GrowWatt;
 using Data.Contracts.SunGrow;
 using Data.Repository;
+using Foundation.AlertConfiguration;
 using Services.Mediator.Factory.Vendors;
 using Services.Mediator.Providers.Vendors;
 using System;
@@ -32,31 +33,39 @@ namespace Services.Mediator
 
         public void Start() {
             Console.WriteLine("***************Daily Job Started***************");
-            var allvendors = _vendors.GetVendors();
-            foreach (var vendor in allvendors) {
-                switch (vendor.Name) {
-                    case "GrowWatt":
-                        Factory = new GrowWattFactory(_graph,_growWatt);
-                        break;
-                    case "SunGrow":
-                        Factory = new SunGrowFactory(_graph,_sunGrow);
-                        break;
+            try
+            {
+                var allvendors = _vendors.GetVendors();
+                foreach (var vendor in allvendors)
+                {
+                    switch (vendor.Name)
+                    {
+                        case "GrowWatt":
+                            Factory = new GrowWattFactory(_graph, _growWatt);
+                            break;
+                        case "SunGrow":
+                            Factory = new SunGrowFactory(_graph, _sunGrow);
+                            break;
+                    }
+
+                    Vendor = Factory.Create();
+
+                    #region Energy Graph Recovery
+                    Vendor.GetPlants();
+                    Vendor.SaveAPIResponses();
+                    Vendor.SaveEnergyGraph(vendor.Name);
+                    #endregion
+
                 }
 
-                Vendor = Factory.Create();
-
-                #region Energy Graph Recovery
-                Vendor.GetPlants();
-                Vendor.SaveAPIResponses();
-                Vendor.SaveEnergyGraph(vendor.Name);
+                #region Ranking
+                _misc.CalculateRanking();
                 #endregion
-
             }
-
-            #region Ranking
-            _misc.CalculateRanking();
-            #endregion
-
+            catch (Exception ex) {
+                new FailureAlerts().SendEmail(ex.Data["MethodAndClass"].ToString(),ex.Message);
+            }
+            
             Console.WriteLine("***************Daily Job End***************");
         }
     }
