@@ -165,31 +165,36 @@ namespace Services.Mediator.Providers.Vendors
                               VendorType = pd.VendorType,
                               PlantCapacity = pc.PlantCapacity
                           };
-
-            foreach (var item in RankingDetailView) {
-                decimal TargetEnergy = item.SunHours * item.PlantCapacity;
-                decimal TargetAchieved;
-                if (TargetEnergy > 0) {
-                    TargetAchieved = item.Energy / TargetEnergy;
+            if (RankingDetailView.Count() > 0) {
+                foreach (var item in RankingDetailView)
+                {
+                    decimal TargetEnergy = item.SunHours * item.PlantCapacity;
+                    decimal TargetAchieved;
+                    if (TargetEnergy > 0)
+                    {
+                        TargetAchieved = item.Energy / TargetEnergy;
+                    }
+                    else
+                    {
+                        TargetAchieved = 0;
+                    }
+                    ranking.Add(new Ranking { PlantId = item.PlantId, RankingPercentage = TargetAchieved });
                 }
-                else {
-                    TargetAchieved = 0;
+
+                var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
+                int position = 1;
+                var date = DateTime.Now;
+
+                foreach (var item in finallist)
+                {
+                    item.Rank = position;
+                    item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(PlantIds.Count())) * 100);
+                    item.CreatedOn = date;
+                    item.UpdatedOn = date;
+                    position++;
                 }
-                ranking.Add(new Ranking {  PlantId = item.PlantId, RankingPercentage = TargetAchieved});
+                _misc.FinalRanking(finallist);
             }
-
-            var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
-            int position = 1;
-            var date = DateTime.Now;
-
-            foreach (var item in finallist) {
-                item.Rank = position;
-                item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(ranking.Count)) * 100);
-                item.CreatedOn = date;
-                item.UpdatedOn = date;
-                position++;
-            }
-            _misc.FinalRanking(finallist);
         }
     }
 }

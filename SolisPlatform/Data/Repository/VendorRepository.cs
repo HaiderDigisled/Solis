@@ -22,7 +22,7 @@ namespace Data.Repository
             //var vendors = dapper.Get<Vendors>(StoredProcedures.GetVendors,null,null,true,null,System.Data.CommandType.StoredProcedure);
             try
             {
-                var vendors = dapper.Get<Vendors>("select * from VendorDetails", null, null, true, null, System.Data.CommandType.Text);
+                var vendors = dapper.Get<Vendors>("select * from VendorDetails with (nolock)", null, null, true, null, System.Data.CommandType.Text);
                 return vendors;
             }
             catch (Exception ex) {

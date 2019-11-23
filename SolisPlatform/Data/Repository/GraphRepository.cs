@@ -32,7 +32,7 @@ namespace Data.Repository
         public IEnumerable<APISuccessResponses> GetGraphResponses(string provider)
         {
             Console.WriteLine($"Getting UnMapped API Responses for {provider}");
-            string query = $"select * from APISuccessResponses where Provider ='{provider}' and Mapped=0";
+            string query = $"select * from APISuccessResponses with (nolock) where Provider ='{provider}' and Mapped=0";
             try
             {
                 return dapper.Query<APISuccessResponses>(query, null, null, true, null, System.Data.CommandType.Text);
@@ -55,7 +55,7 @@ namespace Data.Repository
 
                 Console.WriteLine("Marking Mapped Responses as 1");
                 string plantids = string.Join(",", graph.Select(x => x.plantid).ToList());
-                string query = $"update APISuccessResponses set Mapped=1 where plantId IN ({plantids})";
+                string query = $"update APISuccessResponses set Mapped=1 where Mapped=0 and plantId IN ({plantids})";
                 dapper.Execute<bool>(query, null, null, true, null, System.Data.CommandType.Text);
 
                 Console.WriteLine("Marked Mapped Responses as 1");

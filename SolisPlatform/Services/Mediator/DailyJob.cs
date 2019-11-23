@@ -41,10 +41,10 @@ namespace Services.Mediator
                     switch (vendor.Name)
                     {
                         case "GrowWatt":
-                            Factory = new GrowWattFactory(_graph, _growWatt,_misc);
+                            Factory = new GrowWattFactory(_graph, _growWatt, _misc);
                             break;
                         case "SunGrow":
-                            Factory = new SunGrowFactory(_graph, _sunGrow,_misc);
+                            Factory = new SunGrowFactory(_graph, _sunGrow, _misc);
                             break;
                     }
 
@@ -52,13 +52,13 @@ namespace Services.Mediator
 
                     #region Energy Graph Recovery
                     Vendor.GetPlants();
-                    //Vendor.SaveAPIResponses();
-                    //Vendor.SaveEnergyGraph(vendor.Name);
+                    Vendor.SaveAPIResponses();
+                    Vendor.SaveEnergyGraph(vendor.Name);
                     Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
                     #endregion
 
                 }
-                
+
             }
             catch (Exception ex) {
                 new FailureAlerts().SendEmail(ex.Data["MethodAndClass"].ToString(),ex.Message);
