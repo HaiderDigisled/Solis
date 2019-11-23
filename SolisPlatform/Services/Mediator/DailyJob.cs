@@ -23,7 +23,7 @@ namespace Services.Mediator
         private VendorFactory Factory;
         private VendorBase Vendor;
 
-        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt,IMiscRepository misc) {
+        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt, IMiscRepository misc) {
             _vendors = vendors;
             _graph = graph;
             _sunGrow = sunGrow;
@@ -41,10 +41,10 @@ namespace Services.Mediator
                     switch (vendor.Name)
                     {
                         case "GrowWatt":
-                            Factory = new GrowWattFactory(_graph, _growWatt);
+                            Factory = new GrowWattFactory(_graph, _growWatt,_misc);
                             break;
                         case "SunGrow":
-                            Factory = new SunGrowFactory(_graph, _sunGrow);
+                            Factory = new SunGrowFactory(_graph, _sunGrow,_misc);
                             break;
                     }
 
@@ -52,15 +52,13 @@ namespace Services.Mediator
 
                     #region Energy Graph Recovery
                     Vendor.GetPlants();
-                    Vendor.SaveAPIResponses();
-                    Vendor.SaveEnergyGraph(vendor.Name);
+                    //Vendor.SaveAPIResponses();
+                    //Vendor.SaveEnergyGraph(vendor.Name);
+                    Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
                     #endregion
 
                 }
-
-                #region Ranking
-                _misc.CalculateRanking();
-                #endregion
+                
             }
             catch (Exception ex) {
                 new FailureAlerts().SendEmail(ex.Data["MethodAndClass"].ToString(),ex.Message);

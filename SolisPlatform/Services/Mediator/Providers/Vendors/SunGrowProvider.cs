@@ -1,5 +1,6 @@
 ﻿using Data.Contracts;
 using Data.Contracts.SunGrow;
+using Data.DTO;
 using Data.Enums;
 using Data.Mappers;
 using Data.Model;
@@ -18,13 +19,15 @@ namespace Services.Mediator.Providers.Vendors
     {
         private readonly IGraphRepository _graph;
         private readonly ISunGrowRepository _sungrow;
+        private readonly IMiscRepository _misc;
         private IEnumerable<int> PlantIds;
         private List<APISuccessResponses> apiresponses;
         private EnergyGraphMapper mapper;
 
-        public SunGrowProvider(IGraphRepository graph,ISunGrowRepository sungrow) {
+        public SunGrowProvider(IGraphRepository graph,ISunGrowRepository sungrow, IMiscRepository misc) {
             _graph = graph;
             _sungrow = sungrow;
+            _misc = misc;
             apiresponses = new List<APISuccessResponses>();
             mapper = new EnergyGraphMapper();
         }
@@ -144,5 +147,55 @@ namespace Services.Mediator.Providers.Vendors
             apiresponses.Clear();
         }
 
+        public override void CalculateRanking()
+        {
+            List<Ranking> ranking = new List<Ranking>();
+            var PlantDetails = _misc.CalculateRanking(PlantIds, "GrowWatt");
+            var PlantCapacity = _misc.GetPlantsCapacity("GrowWattPlantInformation", "PeakPower", "PlantId", PlantIds);
+            var RankingDetailView = from pd in PlantDetails
+                                    join pc in PlantCapacity
+                                    on pd.PlantId equals pc.PlantId
+                                    select new RankingCalculationViewDTO
+                                    {
+                                        PlantId = pd.PlantId,
+                                        Energy = pd.Energy,
+                                        GridStationRate = pd.GridStationRate,
+                                        GroupId = pd.GroupId,
+                                        RateMonthDateTime = pd.RateMonthDateTime,
+                                        SunHours = pd.SunHours,
+                                        UserId = pd.UserId,
+                                        VendorType = pd.VendorType,
+                                        PlantCapacity = pc.PlantCapacity
+                                    };
+
+            foreach (var item in RankingDetailView)
+            {
+                decimal TargetEnergy = item.SunHours * item.PlantCapacity;
+                decimal TargetAchieved;
+                if (TargetEnergy > 0)
+                {
+                    TargetAchieved = item.Energy / TargetEnergy;
+                }
+                else
+                {
+                    TargetAchieved = 0;
+                }
+                ranking.Add(new Ranking { PlantId = item.PlantId, RankingPercentage = TargetAchieved });
+            }
+
+            var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
+            int position = 1;
+            var date = DateTime.Now;
+
+            foreach (var item in finallist)
+            {
+                item.Rank = position;
+                item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(ranking.Count)) * 100);
+                item.CreatedOn = date;
+                item.UpdatedOn = date;
+                position++;
+            }
+            _misc.FinalRanking(finallist);
+        }
     }
 }

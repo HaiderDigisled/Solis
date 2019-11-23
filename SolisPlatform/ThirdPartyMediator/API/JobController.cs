@@ -32,7 +32,7 @@ namespace ThirdPartyMediator.API
         [HttpPost]
         public void recover([FromBody]RecurringJobDTO job)
         {
-            RecurringJob.AddOrUpdate("Half Hourly Job",() => JobBuilder.TriggerUserJob(
+            RecurringJob.AddOrUpdate(job.Name,() => JobBuilder.TriggerUserJob(
                 job.BaseUrl, job.Method, job.Model),job.CronExpression);
         }
 

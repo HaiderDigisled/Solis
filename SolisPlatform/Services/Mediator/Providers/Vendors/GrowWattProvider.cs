@@ -1,5 +1,6 @@
 ﻿using Data.Contracts;
 using Data.Contracts.GrowWatt;
+using Data.DTO;
 using Data.Mappers;
 using Data.Model;
 using Foundation;
@@ -16,15 +17,18 @@ namespace Services.Mediator.Providers.Vendors
     {
         private readonly IGraphRepository _graph;
         private readonly IGrowWattRepository _growWatt;
+        private readonly IMiscRepository _misc;
         private Helper helper;
         private IEnumerable<int> PlantIds;
         private List<APISuccessResponses> apiresponses;
         private EnergyGraphMapper mapper;
 
 
-        public GrowWattProvider(IGraphRepository graph,IGrowWattRepository growWatt) {
+        public GrowWattProvider(IGraphRepository graph, IGrowWattRepository growWatt, IMiscRepository misc)
+        {
             _graph = graph;
             _growWatt = growWatt;
+            _misc = misc;
             helper = new Helper();
             apiresponses = new List<APISuccessResponses>();
             mapper = new EnergyGraphMapper();
@@ -49,7 +53,8 @@ namespace Services.Mediator.Providers.Vendors
             string StartDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
             string EndDate = DateTime.Now.ToString("yyyy-MM-dd");
 
-            foreach (var plant in PlantIds) {
+            foreach (var plant in PlantIds)
+            {
                 Console.WriteLine($"Recovering Plant {plant}");
                 GetPlantGraph(plant, StartDate, EndDate);
                 Console.WriteLine($"Recovered Plant {plant}");
@@ -125,11 +130,12 @@ namespace Services.Mediator.Providers.Vendors
                     });
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ex.Data["MethodAndClass"] = "GetPlantGraph() in GrowWattProvider";
                 throw ex;
             }
-            
+
         }
 
         private void ReconcileAPIResponses()
@@ -139,5 +145,51 @@ namespace Services.Mediator.Providers.Vendors
             apiresponses.Clear();
         }
 
+        public override void CalculateRanking()
+        {
+            List<Ranking> ranking = new List<Ranking>();
+            var PlantDetails = _misc.CalculateRanking(PlantIds, "GrowWatt");
+            var PlantCapacity = _misc.GetPlantsCapacity("GrowWattPlantInformation", "PeakPower", "PlantId", PlantIds);
+            var RankingDetailView = from pd in PlantDetails
+                          join pc in PlantCapacity
+                          on pd.PlantId equals pc.PlantId
+                          select new RankingCalculationViewDTO
+                          {
+                              PlantId = pd.PlantId,
+                              Energy = pd.Energy,
+                              GridStationRate = pd.GridStationRate,
+                              GroupId = pd.GroupId,
+                              RateMonthDateTime = pd.RateMonthDateTime,
+                              SunHours = pd.SunHours,
+                              UserId = pd.UserId,
+                              VendorType = pd.VendorType,
+                              PlantCapacity = pc.PlantCapacity
+                          };
+
+            foreach (var item in RankingDetailView) {
+                decimal TargetEnergy = item.SunHours * item.PlantCapacity;
+                decimal TargetAchieved;
+                if (TargetEnergy > 0) {
+                    TargetAchieved = item.Energy / TargetEnergy;
+                }
+                else {
+                    TargetAchieved = 0;
+                }
+                ranking.Add(new Ranking {  PlantId = item.PlantId, RankingPercentage = TargetAchieved});
+            }
+
+            var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
+            int position = 1;
+            var date = DateTime.Now;
+
+            foreach (var item in finallist) {
+                item.Rank = position;
+                item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(ranking.Count)) * 100);
+                item.CreatedOn = date;
+                item.UpdatedOn = date;
+                position++;
+            }
+            _misc.FinalRanking(finallist);
+        }
     }
 }

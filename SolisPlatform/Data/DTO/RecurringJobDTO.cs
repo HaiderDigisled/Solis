@@ -13,5 +13,6 @@ namespace Data.DTO
         public string CronExpression { get; set; }
         public string Model { get; set; }
         public string RequestType { get; set; }
+        public string Name { get; set; }
     }
 }

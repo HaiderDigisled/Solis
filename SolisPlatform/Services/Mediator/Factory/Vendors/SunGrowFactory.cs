@@ -13,14 +13,16 @@ namespace Services.Mediator.Factory.Vendors
     {
         private readonly IGraphRepository _graph;
         private readonly ISunGrowRepository _sungrow;
-        public SunGrowFactory(IGraphRepository graph, ISunGrowRepository sunGrow)
+        private readonly IMiscRepository _misc;
+        public SunGrowFactory(IGraphRepository graph, ISunGrowRepository sunGrow, IMiscRepository misc)
         {
             _graph = graph;
             _sungrow = sunGrow;
+            _misc = misc;
         }
         public override VendorBase Create()
         {
-            return new SunGrowProvider(_graph,_sungrow);
+            return new SunGrowProvider(_graph,_sungrow,_misc);
         }
     }
 }

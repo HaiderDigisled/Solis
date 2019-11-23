@@ -13,13 +13,16 @@ namespace Services.Mediator.Factory.Vendors
     {
         private readonly IGraphRepository _graph;
         private readonly IGrowWattRepository _growWatt;
-        public GrowWattFactory(IGraphRepository graph,IGrowWattRepository growWatt) {
+        private readonly IMiscRepository _misc;
+
+        public GrowWattFactory(IGraphRepository graph,IGrowWattRepository growWatt, IMiscRepository misc) {
             _graph = graph;
             _growWatt = growWatt;
+            _misc = misc;
         }
         public override VendorBase Create()
         {
-            return new GrowWattProvider(_graph,_growWatt);
+            return new GrowWattProvider(_graph,_growWatt,_misc);
         }
     }
 }
