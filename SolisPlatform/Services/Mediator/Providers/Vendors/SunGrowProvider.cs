@@ -198,5 +198,15 @@ namespace Services.Mediator.Providers.Vendors
                 _misc.FinalRanking(finallist);
             }
         }
+
+        public override void UpdatePlantsStatus()
+        {
+            // to be Implemented Later
+        }
+
+        public override void CheckDeviceFaults()
+        {
+            // to be Implemented Later
+        }
     }
 }

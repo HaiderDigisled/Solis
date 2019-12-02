@@ -12,5 +12,7 @@ namespace Services.Mediator.Providers.Vendors
         public abstract void SaveAPIResponses();
         public abstract void SaveEnergyGraph(string VendorName);
         public abstract void CalculateRanking();
+        public abstract void UpdatePlantsStatus();
+        public abstract void CheckDeviceFaults();
     }
 }

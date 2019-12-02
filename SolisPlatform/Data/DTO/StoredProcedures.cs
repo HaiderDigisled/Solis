@@ -12,5 +12,7 @@ namespace Data.DTO
         public const string GetPlants = "V1_GetPlantIds";
         public const string PopulateAPISuccessResponses = "InsertAPISuccessResponse";
         public const string CalculateRanking = "CalculateRanking";
+        public const string AddOrUpdateGrowWattDeviceInformation = "AddOrUpdateGrowWattDeviceInformation";
+        public const string AddGrowWattDeviceFaults = "AddGrowWattDeviceFaults";
     }
 }

@@ -55,6 +55,8 @@ namespace Services.Mediator
                     Vendor.SaveAPIResponses();
                     Vendor.SaveEnergyGraph(vendor.Name);
                     Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
+                    Vendor.UpdatePlantsStatus();
+                    Vendor.CheckDeviceFaults();
                     #endregion
 
                 }
