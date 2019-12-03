@@ -80,11 +80,14 @@
     <Compile Include="DTO\GraphDTO.cs" />
     <Compile Include="DTO\RankingCalculationViewDTO.cs" />
     <Compile Include="DTO\RecurringJobDTO.cs" />
+    <Compile Include="DTO\RestAPIDTOs.cs" />
     <Compile Include="DTO\StoredProcedures.cs" />
     <Compile Include="Enums\SunGrowMethods.cs" />
     <Compile Include="Mappers\EnergyGraphMapper.cs" />
     <Compile Include="Model\APISuccessResponses.cs" />
     <Compile Include="Model\EnergyGraph.cs" />
+    <Compile Include="Model\GrowWattDevice.cs" />
+    <Compile Include="Model\GrowWattDeviceFaults.cs" />
     <Compile Include="Model\GrowWattPlantInformation.cs" />
     <Compile Include="Model\LoginRestApiDTO.cs" />
     <Compile Include="Model\Ranking.cs" />

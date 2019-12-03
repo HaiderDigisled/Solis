@@ -225,24 +225,27 @@ namespace Services.Mediator.Providers.Vendors
                 if (response.IsSuccessful)
                 {
                     var plantInformation = JsonConvert.DeserializeObject<RootDeviceobject>(response.Content);
-                    if (plantInformation.data.count != 0)
-                    {
-                        foreach (var device in plantInformation.data.devices)
+                    if (plantInformation.error_code == 0) {
+                        if (plantInformation.data.count != 0)
                         {
-                            deviceInfo.PlantId = plant;
-                            deviceInfo.DeviceId = device.device_id.Equals(null) ? 0 : device.device_id;
-                            deviceInfo.Type = !device.type.Equals(0) ? device.type : 0;
-                            deviceInfo.Model = !string.IsNullOrWhiteSpace(device.model) ? device.model : "";
-                            deviceInfo.Manufacturer = !string.IsNullOrWhiteSpace(device.manufacturer) ? device.manufacturer : "";
-                            deviceInfo.LastUpdateTime = device.last_update_time;
-                            deviceInfo.DataloggerSn = device.datalogger_sn;
-                            deviceInfo.DeviceOnlineStatus = device.lost;
-                            deviceInfo.DeviceTypeStatus = device.status;
-                            deviceInfo.DeviceSn = device.device_sn;
+                            foreach (var device in plantInformation.data.devices)
+                            {
+                                deviceInfo.PlantId = plant;
+                                deviceInfo.DeviceId = device.device_id.Equals(null) ? 0 : device.device_id;
+                                deviceInfo.Type = !device.type.Equals(0) ? device.type : 0;
+                                deviceInfo.Model = !string.IsNullOrWhiteSpace(device.model) ? device.model : "";
+                                deviceInfo.Manufacturer = !string.IsNullOrWhiteSpace(device.manufacturer) ? device.manufacturer : "";
+                                deviceInfo.LastUpdateTime = device.last_update_time;
+                                deviceInfo.DataloggerSn = device.datalogger_sn;
+                                deviceInfo.DeviceOnlineStatus = device.lost;
+                                deviceInfo.DeviceTypeStatus = device.status;
+                                deviceInfo.DeviceSn = device.device_sn;
 
-                            deviceInformation.Add(deviceInfo);
+                                deviceInformation.Add(deviceInfo);
+                            }
                         }
                     }
+                   
                 }
             }
 
@@ -252,7 +255,7 @@ namespace Services.Mediator.Providers.Vendors
 
         public override void CheckDeviceFaults()
         {
-            foreach (var item in deviceInformation.Where(x => x.Type.Equals(3)))
+            foreach (var item in deviceInformation.Where(x => !x.Type.Equals(3)).Distinct())
             {
                 var faultInfo = new GrowWattDeviceFaults();
                 var client = new RestClient("http://server.growatt.com/v1/device/inverter/alarm?device_sn=" + item.DeviceSn + "");
@@ -271,18 +274,21 @@ namespace Services.Mediator.Providers.Vendors
                 if (response.IsSuccessful)
                 {
                     var plantFaultsInformation = JsonConvert.DeserializeObject<RootDeviceFaultsobject>(response.Content);
-                    if (plantFaultsInformation.data.count != 0)
+                    if (plantFaultsInformation.error_code == 0)
                     {
-                        foreach (var device in plantFaultsInformation.data.alarms)
+                        if (plantFaultsInformation.data.count != 0)
                         {
-                            faultInfo.DeviceSn = item.DeviceSn;
-                            faultInfo.AlarmCode = !device.alarm_code.Equals(null) ? device.alarm_code : 0;
-                            faultInfo.DeviceTypeStatus = !device.status.Equals(0) ? device.status : 0;
-                            faultInfo.Starttime = !string.IsNullOrWhiteSpace(device.start_time) ? device.start_time : "";
-                            faultInfo.Endtime = !string.IsNullOrWhiteSpace(device.end_time) ? device.end_time : "";
-                            faultInfo.AlarmMessage = !string.IsNullOrWhiteSpace(device.alarm_message) ? device.alarm_message : "";
+                            foreach (var device in plantFaultsInformation.data.alarms)
+                            {
+                                faultInfo.DeviceSn = item.DeviceSn;
+                                faultInfo.AlarmCode = !device.alarm_code.Equals(null) ? device.alarm_code : 0;
+                                faultInfo.DeviceTypeStatus = !device.status.Equals(0) ? device.status : 0;
+                                faultInfo.Starttime = !string.IsNullOrWhiteSpace(device.start_time) ? device.start_time : "";
+                                faultInfo.Endtime = !string.IsNullOrWhiteSpace(device.end_time) ? device.end_time : "";
+                                faultInfo.AlarmMessage = !string.IsNullOrWhiteSpace(device.alarm_message) ? device.alarm_message : "";
 
-                            faultsInformation.Add(faultInfo);
+                                faultsInformation.Add(faultInfo);
+                            }
                         }
                     }
                 }
