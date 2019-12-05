@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Services.Mediator
 {
-    public class DailyJob :  IDailyJob
+    public class DailyJob : IDailyJob
     {
         private readonly IGraphRepository _graph;
         private readonly IVendorRepository _vendors;
@@ -23,7 +23,8 @@ namespace Services.Mediator
         private VendorFactory Factory;
         private VendorBase Vendor;
 
-        public DailyJob(IVendorRepository vendors,IGraphRepository graph,ISunGrowRepository sunGrow,IGrowWattRepository growWatt, IMiscRepository misc) {
+        public DailyJob(IVendorRepository vendors, IGraphRepository graph, ISunGrowRepository sunGrow, IGrowWattRepository growWatt, IMiscRepository misc)
+        {
             _vendors = vendors;
             _graph = graph;
             _sunGrow = sunGrow;
@@ -31,7 +32,8 @@ namespace Services.Mediator
             _misc = misc;
         }
 
-        public void Start() {
+        public void Start()
+        {
             Console.WriteLine("***************Daily Job Started***************");
             try
             {
@@ -62,10 +64,11 @@ namespace Services.Mediator
                 }
 
             }
-            catch (Exception ex) {
-                new FailureAlerts().SendEmail(ex.Data["MethodAndClass"].ToString(),ex.Message);
+            catch (Exception ex)
+            {
+                new FailureAlerts().SendEmail(ex.Data["MethodAndClass"].ToString(), ex.Message);
             }
-            
+
             Console.WriteLine("***************Daily Job End***************");
         }
     }

@@ -257,7 +257,6 @@ namespace Services.Mediator.Providers.Vendors
         {
             foreach (var item in deviceInformation.Where(x => !x.Type.Equals(3)).Distinct())
             {
-                var faultInfo = new GrowWattDeviceFaults();
                 var client = new RestClient("http://server.growatt.com/v1/device/inverter/alarm?device_sn=" + item.DeviceSn + "");
                 var request = new RestRequest(Method.GET);
                 request.AddHeader("cache-control", "no-cache");
@@ -280,6 +279,7 @@ namespace Services.Mediator.Providers.Vendors
                         {
                             foreach (var device in plantFaultsInformation.data.alarms)
                             {
+                                var faultInfo = new GrowWattDeviceFaults();
                                 faultInfo.DeviceSn = item.DeviceSn;
                                 faultInfo.AlarmCode = !device.alarm_code.Equals(null) ? device.alarm_code : 0;
                                 faultInfo.DeviceTypeStatus = !device.status.Equals(0) ? device.status : 0;
@@ -287,14 +287,23 @@ namespace Services.Mediator.Providers.Vendors
                                 faultInfo.Endtime = !string.IsNullOrWhiteSpace(device.end_time) ? device.end_time : "";
                                 faultInfo.AlarmMessage = !string.IsNullOrWhiteSpace(device.alarm_message) ? device.alarm_message : "";
 
-                                faultsInformation.Add(faultInfo);
+                                if (Convert.ToDateTime(faultInfo.Starttime).ToString("yyyyMMdd").Equals(DateTime.Now.ToString("yyyyMMdd")) ||
+                                    Convert.ToDateTime(faultInfo.Endtime).ToString("yyyyMMdd").Equals(DateTime.Now.ToString("yyyyMMdd"))){
+                                    faultsInformation.Add(faultInfo);
+                                }
                             }
                         }
                     }
                 }
             }
-
-            _growWatt.AddDevicesFaultInformation(faultsInformation);
+            if (faultsInformation.Any() && faultsInformation.Count() > 0)
+            {
+                _growWatt.AddDevicesFaultInformation(faultsInformation);
+            }
+            else {
+                Console.WriteLine("No Faults Found Today");
+            }
+            
         }
     }
 }
