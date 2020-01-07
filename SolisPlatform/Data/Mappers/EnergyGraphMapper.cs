@@ -35,7 +35,7 @@ namespace Data.Mappers
                 {
                     Console.WriteLine($"Processing Plant : {resp.plantId}");
                     var Response = JsonConvert.DeserializeObject<SunGrowGraphDTO>(resp.response);
-                    if (Response.result_data.time_flag != null)
+                    if (Response.result_data != null && Response.result_data.time_flag != null)
                     {
                         if (Response.result_data.time_flag.Equals("2"))
                         {
