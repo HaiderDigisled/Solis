@@ -1,7 +1,9 @@
 ﻿using Data.Contracts;
+using Data.Contracts.GoodWee;
 using Data.Contracts.GrowWatt;
 using Data.Contracts.SunGrow;
 using Data.Repository;
+using Data.Repository.GoodWee;
 using Data.Repository.GrowWatt;
 using Data.Repository.SunGrow;
 using Hangfire;
@@ -57,6 +59,7 @@ namespace ThirdPartyMediator
             services.AddScoped<IVendorRepository, VendorRepository>();
             services.AddScoped<ISunGrowRepository, SunGrowRepository>();
             services.AddScoped<IGrowWattRepository, GrowWattRepository>();
+            services.AddScoped<IGoodWeeRepository, GoodWeeRepository>();
             services.AddScoped<IMiscRepository, MiscRepository>();
             
             // Add the processing server as IHostedService

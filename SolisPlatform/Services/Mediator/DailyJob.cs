@@ -1,4 +1,5 @@
 ﻿using Data.Contracts;
+using Data.Contracts.GoodWee;
 using Data.Contracts.GrowWatt;
 using Data.Contracts.SunGrow;
 using Data.Repository;
@@ -19,16 +20,18 @@ namespace Services.Mediator
         private readonly IGrowWattRepository _growWatt;
         private readonly ISunGrowRepository _sunGrow;
         private readonly IMiscRepository _misc;
+        private readonly IGoodWeeRepository _goodWee;
 
         private VendorFactory Factory;
         private VendorBase Vendor;
 
-        public DailyJob(IVendorRepository vendors, IGraphRepository graph, ISunGrowRepository sunGrow, IGrowWattRepository growWatt, IMiscRepository misc)
+        public DailyJob(IVendorRepository vendors, IGraphRepository graph, ISunGrowRepository sunGrow, IGrowWattRepository growWatt, IGoodWeeRepository goodWee, IMiscRepository misc)
         {
             _vendors = vendors;
             _graph = graph;
             _sunGrow = sunGrow;
             _growWatt = growWatt;
+            _goodWee = goodWee;
             _misc = misc;
         }
 
@@ -47,6 +50,9 @@ namespace Services.Mediator
                             break;
                         case "SunGrow":
                             Factory = new SunGrowFactory(_graph, _sunGrow, _misc);
+                            break;
+                        case "GoodWee":
+                            Factory = new GoodWeeFactory(_graph,_goodWee,_misc);
                             break;
                     }
 
