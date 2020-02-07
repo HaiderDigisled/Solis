@@ -19,19 +19,33 @@ namespace Data.Repository.GoodWee
             dapper = new DapperManager();
         }
 
-        public IEnumerable<string> GetGoodWeePlants()
+        public IEnumerable<PlantInformation> GetGoodWeePlants()
         {
             try
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@FromTable", "PlantInformation");
-                parameters.Add("@ColumnName", "PlantId");
+                parameters.Add("@ColumnName", "PlantId,CreatedTime");
+
                 var plants = dapper.Get<PlantInformation>(StoredProcedures.GetPlants, parameters, null, true, null, System.Data.CommandType.StoredProcedure);
-                return plants.Select(x => x.PlantId);
+                return plants;
             }
             catch (Exception ex)
             {
                 ex.Data["MethodAndClass"] = "GetGoodWeePlants() in GoodWeeRepository";
+                throw ex;
+            }
+        }
+
+        public void MarkPlantHistoric(string PlantId)
+        {
+            try
+            {
+                string query = $"update PlantInformation set IsHistoric=1 where PlantId= {PlantId}";
+                dapper.Execute<int>(query,null,null,true,null,System.Data.CommandType.Text);
+            }
+            catch (Exception ex) {
+                ex.Data["MethodAndClass"] = "MarkPlantHistoric() in GoodWeeRepository";
                 throw ex;
             }
         }

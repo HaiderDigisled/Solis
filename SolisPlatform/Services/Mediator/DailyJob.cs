@@ -57,15 +57,17 @@ namespace Services.Mediator
                     }
 
                     Vendor = Factory.Create();
+                    if (vendor.Name == "GoodWee") {
+                        #region Energy Graph Recovery
+                        Vendor.GetPlants();
+                        Vendor.SaveAPIResponses();
+                        Vendor.SaveEnergyGraph(vendor.Name);
+                        Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
+                        Vendor.UpdatePlantsStatus();
+                        Vendor.CheckDeviceFaults();
+                        #endregion
+                    }
 
-                    #region Energy Graph Recovery
-                    Vendor.GetPlants();
-                    Vendor.SaveAPIResponses();
-                    Vendor.SaveEnergyGraph(vendor.Name);
-                    Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
-                    Vendor.UpdatePlantsStatus();
-                    Vendor.CheckDeviceFaults();
-                    #endregion
 
                 }
 

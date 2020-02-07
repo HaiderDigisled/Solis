@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Data.Contracts.GoodWee
 {
     public interface IGoodWeeRepository
     {
-        IEnumerable<string> GetGoodWeePlants();
+        IEnumerable<PlantInformation> GetGoodWeePlants();
+        void MarkPlantHistoric(string PlantId);
     }
 }

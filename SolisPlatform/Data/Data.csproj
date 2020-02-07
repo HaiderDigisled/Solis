@@ -78,6 +78,7 @@
     <Compile Include="Contracts\IVendorRepository.cs" />
     <Compile Include="Contracts\SunGrow\ISunGrowRepository.cs" />
     <Compile Include="Dapper\DapperManager.cs" />
+    <Compile Include="DTO\GoodWeeDTO.cs" />
     <Compile Include="DTO\GraphDTO.cs" />
     <Compile Include="DTO\RankingCalculationViewDTO.cs" />
     <Compile Include="DTO\RecurringJobDTO.cs" />

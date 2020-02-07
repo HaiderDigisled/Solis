@@ -19,5 +19,10 @@ namespace Miscellaneous.Foundation
         public static class FailureAlerts {
             public static string InternalRecipients { get; set; }
         }
+
+        public static class RecoveryMode {
+            public static bool Enable { get; set; }
+            public static List<string> PlantIds { get; set; }
+        }
     }
 }

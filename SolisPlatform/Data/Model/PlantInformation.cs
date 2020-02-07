@@ -38,5 +38,7 @@ namespace Data.Model
 
         public bool IsActive { get; set; }
 
+        public bool IsHistoric { get; set; }
+
     }
 }

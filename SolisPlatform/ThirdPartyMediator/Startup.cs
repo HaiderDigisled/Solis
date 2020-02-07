@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Miscellaneous.Foundation;
 using Services;
 using Services.Mediator;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ThirdPartyMediator
@@ -46,8 +47,12 @@ namespace ThirdPartyMediator
                 DisableGlobalLocks = true
             }));
 
+            
+
             Settings.Database.Connection = Configuration["ConnectionStrings:HangfireConnection"];
             Settings.FailureAlerts.InternalRecipients = Configuration["Alerts:Failure:InternalRecipients"];
+            Settings.RecoveryMode.Enable = Configuration.GetSection("RecoveryMode:Enable").Get<bool>();
+            Settings.RecoveryMode.PlantIds = Configuration.GetSection("RecoveryMode:PlantIds").Get<List<string>>();
             // service DI
             services.AddScoped<IServiceHandler, ServiceHandler>();
 
