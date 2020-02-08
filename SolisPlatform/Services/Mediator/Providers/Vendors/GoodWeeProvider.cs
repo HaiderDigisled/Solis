@@ -1,6 +1,7 @@
 ﻿using Data.Contracts;
 using Data.Contracts.GoodWee;
 using Data.DTO;
+using Data.Mappers;
 using Data.Model;
 using Foundation;
 using Miscellaneous.Foundation;
@@ -21,6 +22,7 @@ namespace Services.Mediator.Providers.Vendors
         private readonly IGoodWeeRepository _goodWee;
         private IEnumerable<PlantInformation> PlantIds;
         private List<APISuccessResponses> apiresponses;
+        private EnergyGraphMapper mapper;
         private Helper helper;
 
         public GoodWeeProvider(IGraphRepository graph, IGoodWeeRepository goodWee, IMiscRepository misc)
@@ -29,6 +31,7 @@ namespace Services.Mediator.Providers.Vendors
             _goodWee = goodWee;
             _misc = misc;
             apiresponses = new List<APISuccessResponses>();
+            mapper = new EnergyGraphMapper();
         }
 
         public override void CalculateRanking()
@@ -49,11 +52,16 @@ namespace Services.Mediator.Providers.Vendors
         public override void SaveAPIResponses()
         {
             GetPlantGraph();
+            ReconcileAPIResponses();
         }
 
-        public override void SaveEnergyGraph(string VendorName)
+        public override void SaveEnergyGraph(string Vendor)
         {
-
+            Console.WriteLine($"Mapping Responses for {Vendor} to EnergyGraph");
+            var responses = _graph.GetGraphResponses(Vendor);
+            var graphValues = mapper.Map(responses.ToList(), Vendor);
+            _graph.InsertGraph(graphValues);
+            Console.WriteLine($"Responses Mapped");
         }
 
         public override void UpdatePlantsStatus()
@@ -61,22 +69,36 @@ namespace Services.Mediator.Providers.Vendors
 
         }
 
+        private void ReconcileAPIResponses()
+        {
+            _graph.InsertGraphStats(apiresponses.ToList());
+            Console.WriteLine("Graph Stats Inserted in Response Table");
+            apiresponses.Clear();
+        }
         private void GetPlantGraph()
         {
             try
             {
                 foreach (var plant in PlantIds)
                 {
-                    if (plant.IsHistoric)
+                    if (!plant.IsHistoric)
                     {
                         helper = new Helper();
                         var weeklyRange = helper.GetWeeklyRange(plant.CreatedTime.Split('T')[0], DateTime.Now.ToString("yyyy-MM-dd"));
                         foreach (var week in weeklyRange)
                         {
-                            GetPlantDetails(plant.PlantId, week.EndDate, "0");
-                            GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), "1");
+                            GetPlantDetails(plant.PlantId, week.EndDate, "0"); // Get Daily Stats
                         }
+
+                        GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), "1"); // Get Monthly Stats
                         _goodWee.MarkPlantHistoric(plant.PlantId);
+                    }
+                    else {
+                        string[] types = { "0", "1" };
+                        foreach (var type in types)
+                        {
+                            GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), type);
+                        }
                     }
                 }
             }

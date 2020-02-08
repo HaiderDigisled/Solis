@@ -1,4 +1,5 @@
-﻿using Data.Model;
+﻿using Data.DTO;
+using Data.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace Data.Mappers
                     break;
                 case "GrowWatt":
                     graph = GrowWatt(responses, Provider);
+                    break;
+                case "GoodWee":
+                    graph = GoodWee(responses, Provider);
                     break;
             }
             return graph;
@@ -76,11 +80,12 @@ namespace Data.Mappers
                     }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ex.Data["MethodAndClass"] = "SunGrow() in EnergyGraphMapper";
                 throw ex;
             }
-           
+
             return graph;
         }
 
@@ -129,11 +134,106 @@ namespace Data.Mappers
                     }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ex.Data["MethodAndClass"] = "GrowWatt() in EnergyGraphMapper";
                 throw ex;
             }
-            
+
+            return graph;
+        }
+
+        public List<EnergyGraph> GoodWee(List<APISuccessResponses> responses, string Provider)
+        {
+
+            List<EnergyGraph> graph = new List<EnergyGraph>();
+            IDictionary<string, IDictionary<string, decimal>> plants = new Dictionary<string, IDictionary<string, decimal>>();
+            foreach (var resp in responses)
+            {
+                var response = JsonConvert.DeserializeObject<GoodWeePlantGeneration>(resp.response);
+                if (response.code == 0)
+                {
+                    if (resp.APIMethod.Contains("Day"))
+                    {
+                        foreach (var days in response.data.pv_generation)
+                        {
+                            if (plants.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
+                            { // plant already present
+                                // check the generation day and add the day if not present
+                                if (!powerGeneration.TryGetValue(days.x, out decimal power))
+                                {
+                                    powerGeneration.Add(days.x, days.y);
+                                }
+                            }
+                            else
+                            {
+                                IDictionary<string, decimal> power = new Dictionary<string, decimal>();
+                                power.Add(days.x, days.y);
+                                plants.Add(resp.plantId, power);
+                            }
+                        }
+
+                        foreach (var plant in plants)
+                        {
+                            foreach (var power in plant.Value)
+                            {
+                                graph.Add(new EnergyGraph()
+                                {
+                                    Month = "NA",
+                                    Energy = Convert.ToDecimal(power.Value),
+                                    Day = power.Key,
+                                    plantid = Convert.ToInt32(plant.Key),
+                                    Provider = "GoodWee",
+                                    timeunit = "day",
+                                    fetchDate = DateTime.Now,
+                                    Year = power.Key.Split('-')[0]
+                                });
+                            }
+                        }
+
+                    }
+                    if (resp.APIMethod.Contains("Month"))
+                    {
+                        foreach (var months in response.data.pv_generation)
+                        {
+                            if (plants.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
+                            { // plant already present
+                                // check the generation day and add the day if not present
+                                if (!powerGeneration.TryGetValue(months.x, out decimal power))
+                                {
+                                    powerGeneration.Add(months.x, months.y);
+                                }
+                            }
+                            else
+                            {
+                                IDictionary<string, decimal> power = new Dictionary<string, decimal>();
+                                power.Add(months.x, months.y);
+                                plants.Add(resp.plantId, power);
+                            }
+                        }
+
+                        foreach (var plant in plants)
+                        {
+                            foreach (var power in plant.Value)
+                            {
+                                graph.Add(new EnergyGraph()
+                                {
+                                    Month = power.Key,
+                                    Energy = Convert.ToDecimal(power.Value),
+                                    Day = "NA",
+                                    plantid = Convert.ToInt32(plant.Key),
+                                    Provider = "GoodWee",
+                                    timeunit = "month",
+                                    fetchDate = DateTime.Now,
+                                    Year = power.Key.Split('-')[0]
+                                });
+                            }
+                        }
+                    }
+                }
+
+            }
+
             return graph;
         }
     }
