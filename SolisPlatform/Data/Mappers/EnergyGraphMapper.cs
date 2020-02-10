@@ -51,7 +51,7 @@ namespace Data.Mappers
                                     Day = String.Concat(DateTime.Now.Year, "-", DateTime.Now.Month, "-", _day >= 10 ? _day.ToString() : string.Concat("0", _day.ToString())),
                                     Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
                                     Month = "NA",
-                                    plantid = Convert.ToInt32(resp.plantId),
+                                    plantid = resp.plantId,
                                     Provider = "SunGrow",
                                     timeunit = "day",
                                     fetchDate = DateTime.Now,
@@ -69,7 +69,7 @@ namespace Data.Mappers
                                     Month = String.Concat(DateTime.Now.Year.ToString(), "-", _month >= 10 ? _month.ToString() : String.Concat("0", _month.ToString())),
                                     Energy = Convert.ToDecimal(x.energy.Equals("--") ? "0.00" : x.energy),
                                     Day = "NA",
-                                    plantid = Convert.ToInt32(resp.plantId),
+                                    plantid = resp.plantId,
                                     Provider = "SunGrow",
                                     timeunit = "month",
                                     fetchDate = DateTime.Now,
@@ -107,7 +107,7 @@ namespace Data.Mappers
                                 Day = x.date,
                                 Energy = Convert.ToDecimal(x.energy),
                                 Month = "NA",
-                                plantid = Convert.ToInt32(resp.plantId),
+                                plantid = resp.plantId,
                                 Provider = "GrowWatt",
                                 timeunit = Response.data.time_unit,
                                 fetchDate = DateTime.Now,
@@ -124,7 +124,7 @@ namespace Data.Mappers
                                 Month = x.date,
                                 Energy = Convert.ToDecimal(x.energy),
                                 Day = "NA",
-                                plantid = Convert.ToInt32(resp.plantId),
+                                plantid = resp.plantId,
                                 Provider = "GrowWatt",
                                 timeunit = Response.data.time_unit,
                                 fetchDate = DateTime.Now,
@@ -147,93 +147,102 @@ namespace Data.Mappers
         {
 
             List<EnergyGraph> graph = new List<EnergyGraph>();
-            IDictionary<string, IDictionary<string, decimal>> plants = new Dictionary<string, IDictionary<string, decimal>>();
-            foreach (var resp in responses)
-            {
-                var response = JsonConvert.DeserializeObject<GoodWeePlantGeneration>(resp.response);
-                if (response.code == 0)
+            IDictionary<string, IDictionary<string, decimal>> plantsDayWise = new Dictionary<string, IDictionary<string, decimal>>();
+            IDictionary<string, IDictionary<string, decimal>> plantsMonthWise = new Dictionary<string, IDictionary<string, decimal>>();
+            try {
+                foreach (var resp in responses)
                 {
-                    if (resp.APIMethod.Contains("Day"))
+                    var response = JsonConvert.DeserializeObject<GoodWeePlantGeneration>(resp.response);
+                    if (response.code == 0)
                     {
-                        foreach (var days in response.data.pv_generation)
+                        if (resp.APIMethod.Contains("Day"))
                         {
-                            if (plants.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
-                            { // plant already present
-                                // check the generation day and add the day if not present
-                                if (!powerGeneration.TryGetValue(days.x, out decimal power))
+                            foreach (var days in response.data.pv_generation)
+                            {
+                                if (plantsDayWise.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
+                                { // plant already present
+                                  // check the generation day and add the day if not present
+                                    if (!powerGeneration.TryGetValue(days.x, out decimal power))
+                                    {
+                                        powerGeneration.Add(days.x, days.y);
+                                    }
+                                }
+                                else
                                 {
-                                    powerGeneration.Add(days.x, days.y);
+                                    IDictionary<string, decimal> power = new Dictionary<string, decimal>();
+                                    power.Add(days.x, days.y);
+                                    plantsDayWise.Add(resp.plantId, power);
                                 }
                             }
-                            else
-                            {
-                                IDictionary<string, decimal> power = new Dictionary<string, decimal>();
-                                power.Add(days.x, days.y);
-                                plants.Add(resp.plantId, power);
-                            }
-                        }
 
-                        foreach (var plant in plants)
-                        {
-                            foreach (var power in plant.Value)
+                            foreach (var plant in plantsDayWise)
                             {
-                                graph.Add(new EnergyGraph()
+                                foreach (var power in plant.Value)
                                 {
-                                    Month = "NA",
-                                    Energy = Convert.ToDecimal(power.Value),
-                                    Day = power.Key,
-                                    plantid = Convert.ToInt32(plant.Key),
-                                    Provider = "GoodWee",
-                                    timeunit = "day",
-                                    fetchDate = DateTime.Now,
-                                    Year = power.Key.Split('-')[0]
-                                });
-                            }
-                        }
-
-                    }
-                    if (resp.APIMethod.Contains("Month"))
-                    {
-                        foreach (var months in response.data.pv_generation)
-                        {
-                            if (plants.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
-                            { // plant already present
-                                // check the generation day and add the day if not present
-                                if (!powerGeneration.TryGetValue(months.x, out decimal power))
-                                {
-                                    powerGeneration.Add(months.x, months.y);
+                                    graph.Add(new EnergyGraph()
+                                    {
+                                        Month = "NA",
+                                        Energy = Convert.ToDecimal(power.Value),
+                                        Day = power.Key,
+                                        plantid = plant.Key,
+                                        Provider = "GoodWee",
+                                        timeunit = "day",
+                                        fetchDate = DateTime.Now,
+                                        Year = power.Key.Split('-')[0]
+                                    });
                                 }
                             }
-                            else
-                            {
-                                IDictionary<string, decimal> power = new Dictionary<string, decimal>();
-                                power.Add(months.x, months.y);
-                                plants.Add(resp.plantId, power);
-                            }
-                        }
 
-                        foreach (var plant in plants)
+                        }
+                        if (resp.APIMethod.Contains("Month"))
                         {
-                            foreach (var power in plant.Value)
+                            foreach (var months in response.data.pv_generation)
                             {
-                                graph.Add(new EnergyGraph()
+                                if (plantsMonthWise.TryGetValue(resp.plantId, out IDictionary<string, decimal> powerGeneration))
+                                { // plant already present
+                                  // check the generation day and add the day if not present
+                                    if (!powerGeneration.TryGetValue(months.x, out decimal power))
+                                    {
+                                        powerGeneration.Add(months.x, months.y);
+                                    }
+                                }
+                                else
                                 {
-                                    Month = power.Key,
-                                    Energy = Convert.ToDecimal(power.Value),
-                                    Day = "NA",
-                                    plantid = Convert.ToInt32(plant.Key),
-                                    Provider = "GoodWee",
-                                    timeunit = "month",
-                                    fetchDate = DateTime.Now,
-                                    Year = power.Key.Split('-')[0]
-                                });
+                                    IDictionary<string, decimal> power = new Dictionary<string, decimal>();
+                                    power.Add(months.x, months.y);
+                                    plantsMonthWise.Add(resp.plantId, power);
+                                }
+                            }
+
+                            foreach (var plant in plantsMonthWise)
+                            {
+                                foreach (var power in plant.Value)
+                                {
+                                    graph.Add(new EnergyGraph()
+                                    {
+                                        Month = power.Key,
+                                        Energy = Convert.ToDecimal(power.Value),
+                                        Day = "NA",
+                                        plantid = plant.Key,
+                                        Provider = "GoodWee",
+                                        timeunit = "month",
+                                        fetchDate = DateTime.Now,
+                                        Year = power.Key.Split('-')[0]
+                                    });
+                                }
                             }
                         }
                     }
+
                 }
 
             }
-
+            catch (Exception ex)
+            {
+                ex.Data["MethodAndClass"] = "GoodWee() in EnergyGraphMapper";
+                throw ex;
+            }
+        
             return graph;
         }
     }

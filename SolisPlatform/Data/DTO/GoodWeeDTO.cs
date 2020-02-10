@@ -49,7 +49,7 @@ namespace Data.DTO
 
     public class PVGeneration {
         public string x { get; set; }
-        public int y { get; set; }
+        public decimal y { get; set; }
     }
 
 }

@@ -58,6 +58,7 @@ namespace Services.Mediator.Providers.Vendors
             string StartDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
             string EndDate = DateTime.Now.ToString("yyyy-MM-dd");
 
+            //GetPlantGraph(256551, "2020-02-03", EndDate);
             foreach (var plant in PlantIds)
             {
                 Console.WriteLine($"Recovering Plant {plant}");

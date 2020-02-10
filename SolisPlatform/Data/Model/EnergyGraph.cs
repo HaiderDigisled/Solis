@@ -8,7 +8,7 @@ namespace Data.Model
 {
     public class EnergyGraph
     {
-        public int plantid { get; set; }
+        public string plantid { get; set; }
 
         public string Provider { get; set; }
 
