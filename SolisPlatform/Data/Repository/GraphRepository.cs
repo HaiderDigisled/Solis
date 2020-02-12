@@ -57,6 +57,7 @@ namespace Data.Repository
 
                 Console.WriteLine("Marking Mapped Responses as 1");
                 string plantids = string.Join(",", graph.Select(x => x.plantid).ToList().Distinct());
+                plantids = string.Concat("'",plantids.Replace(",","','"),"'");
                 string query = $"update APISuccessResponses set Mapped=1 where Mapped=0 and plantId IN ({plantids})";
                 dapper.Execute<bool>(query, null, null, true, null, System.Data.CommandType.Text);
 

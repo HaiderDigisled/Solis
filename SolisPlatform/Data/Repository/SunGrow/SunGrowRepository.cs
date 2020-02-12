@@ -18,7 +18,7 @@ namespace Data.Repository.SunGrow
         {
             dapper = new DapperManager();
         }
-        public IEnumerable<int> GetSunGrowPlants()
+        public IEnumerable<string> GetSunGrowPlants()
         {
             try
             {

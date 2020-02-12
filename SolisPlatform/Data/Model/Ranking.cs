@@ -9,7 +9,7 @@ namespace Data.Model
     public class Ranking
     {
         public int id { get; set; }
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
         public decimal RankingPercentage { get; set; }
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }

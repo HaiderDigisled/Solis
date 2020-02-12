@@ -17,7 +17,7 @@ namespace Data.Model
         public string CurrentPower { get; set; }
         public string CreateDate { get; set; }
         public string ImageUrl { get; set; }
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
         public string Name { get; set; }
         public string Installer { get; set; }
         public int GrowWattUserId { get; set; }

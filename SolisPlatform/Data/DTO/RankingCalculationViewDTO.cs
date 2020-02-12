@@ -11,7 +11,7 @@ namespace Data.DTO
         public int id { get; set; }
         public int UserId { get; set; }
         public int GroupId { get; set; }
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
         public int VendorType { get; set; }
         public decimal GridStationRate { get; set; }
         public decimal SunHours { get; set; }

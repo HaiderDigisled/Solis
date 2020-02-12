@@ -10,8 +10,8 @@ namespace Data.Contracts
 {
     public interface IMiscRepository
     {
-        IEnumerable<RankingCalculationViewDTO> CalculateRanking(IEnumerable<int> PlantIds, string Provider);
-        IEnumerable<RankingCalculationViewDTO> GetPlantsCapacity(string TableName, string Field, string Filter, IEnumerable<int> PlantIds);
+        IEnumerable<RankingCalculationViewDTO> CalculateRanking(IEnumerable<string> PlantIds, string Provider);
+        IEnumerable<RankingCalculationViewDTO> GetPlantsCapacity(string TableName, string Field, string Filter, IEnumerable<string> PlantIds);
         void FinalRanking(IEnumerable<Ranking> ranking);
     }
 }

@@ -8,6 +8,6 @@ namespace Data.Contracts.SunGrow
 {
     public interface ISunGrowRepository
     {
-        IEnumerable<int> GetSunGrowPlants();
+        IEnumerable<string> GetSunGrowPlants();
     }
 }

@@ -19,7 +19,7 @@ namespace Data.Repository.GrowWatt
         }
 
 
-        public IEnumerable<int> GetGrowWattPlants()
+        public IEnumerable<string> GetGrowWattPlants()
         {
             try
             {

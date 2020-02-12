@@ -17,9 +17,11 @@ namespace Data.Repository
         public MiscRepository() {
             dapper = new DapperManager();
         }
-        public IEnumerable<RankingCalculationViewDTO> CalculateRanking(IEnumerable<int> PlantIds,string Provider)
+        public IEnumerable<RankingCalculationViewDTO> CalculateRanking(IEnumerable<string> PlantIds,string Provider)
         {
-            string query = $"select * from RankingCalculationView with (nolock) where PlantId in ({string.Join(",",PlantIds.ToList())})";
+            var plantids = string.Join(",", PlantIds.ToList());
+            plantids = string.Concat("'",plantids.Replace(",","','"),"'");
+            string query = $"select * from RankingCalculationView with (nolock) where PlantId in ({plantids})";
             try
             {
                 var result = dapper.Get<RankingCalculationViewDTO>(query, null, null, true, null, System.Data.CommandType.Text);
@@ -32,8 +34,11 @@ namespace Data.Repository
             }
         }
 
-        public IEnumerable<RankingCalculationViewDTO> GetPlantsCapacity(string TableName,string Field,string Filter, IEnumerable<int> PlantIds) {
-            string query = $"select {Filter} as PlantId,{Field} as PlantCapacity from {TableName} with (nolock) where {Filter} in ({string.Join(",", PlantIds.ToList())})";
+        public IEnumerable<RankingCalculationViewDTO> GetPlantsCapacity(string TableName,string Field,string Filter, IEnumerable<string> PlantIds) {
+            var plantids = string.Join(",", PlantIds.ToList());
+            plantids = string.Concat("'", plantids.Replace(",", "','"), "'");
+
+            string query = $"select {Filter} as PlantId,{Field} as PlantCapacity from {TableName} with (nolock) where {Filter} in ({plantids})";
             try
             {
                 var result = dapper.Get<RankingCalculationViewDTO>(query, null, null, true, null, System.Data.CommandType.Text);
@@ -49,7 +54,10 @@ namespace Data.Repository
 
         public void FinalRanking(IEnumerable<Ranking> ranking)
         {
-            string query = $"delete from RankingTable where PlantId in ({string.Join(",",ranking.Select(x => x.PlantId).ToList())}) and Convert(nvarchar(20),CreatedOn,112) Like '%{DateTime.Now.ToString("yyyyMM")}%'";
+            var plantids = string.Join(",", ranking.Select(x => x.PlantId).ToList());
+            plantids = string.Concat("'", plantids.Replace(",", "','"), "'");
+
+            string query = $"delete from RankingTable where PlantId in ({plantids}) and Convert(nvarchar(20),CreatedOn,112) Like '%{DateTime.Now.ToString("yyyyMM")}%'";
             
 
             try

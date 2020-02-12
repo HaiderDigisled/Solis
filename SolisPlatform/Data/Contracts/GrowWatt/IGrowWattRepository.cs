@@ -9,7 +9,7 @@ namespace Data.Contracts.GrowWatt
 {
     public interface IGrowWattRepository
     {
-        IEnumerable<int> GetGrowWattPlants();
+        IEnumerable<string> GetGrowWattPlants();
         void UpdateGrowWattDevicesInformation(IEnumerable<GrowWattDevice> devices);
         void AddDevicesFaultInformation(IEnumerable<GrowWattDeviceFaults> faults);
     }

@@ -17,6 +17,6 @@ namespace Data.Model
         public int? DeviceId { get; set; }
         public string DataloggerSn { get; set; }
         public int Type { get; set; }
-        public int PlantId { get; set; }
+        public string PlantId { get; set; }
     }
 }

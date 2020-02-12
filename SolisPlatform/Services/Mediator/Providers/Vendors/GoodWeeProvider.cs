@@ -36,7 +36,55 @@ namespace Services.Mediator.Providers.Vendors
 
         public override void CalculateRanking()
         {
+            List<Ranking> ranking = new List<Ranking>();
+            var PlantDetails = _misc.CalculateRanking(PlantIds.Select(x => x.PlantId), "GoodWee");
+            var PlantCapacity = _misc.GetPlantsCapacity("PlantInformation", "Capacity", "PlantId", PlantIds.Select(x => x.PlantId));
+            var RankingDetailView = from pd in PlantDetails
+                                    join pc in PlantCapacity
+                                    on pd.PlantId equals pc.PlantId
+                                    select new RankingCalculationViewDTO
+                                    {
+                                        PlantId = pd.PlantId,
+                                        Energy = pd.Energy,
+                                        GridStationRate = pd.GridStationRate,
+                                        GroupId = pd.GroupId,
+                                        RateMonthDateTime = pd.RateMonthDateTime,
+                                        SunHours = pd.SunHours,
+                                        UserId = pd.UserId,
+                                        VendorType = pd.VendorType,
+                                        PlantCapacity = pc.PlantCapacity
+                                    };
+            if (RankingDetailView.Count() > 0)
+            {
+                foreach (var item in RankingDetailView)
+                {
+                    decimal TargetEnergy = item.SunHours * item.PlantCapacity;
+                    decimal TargetAchieved;
+                    if (TargetEnergy > 0)
+                    {
+                        TargetAchieved = item.Energy / TargetEnergy;
+                    }
+                    else
+                    {
+                        TargetAchieved = 0;
+                    }
+                    ranking.Add(new Ranking { PlantId = item.PlantId, RankingPercentage = TargetAchieved });
+                }
 
+                var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
+                int position = 1;
+                var date = DateTime.Now;
+
+                foreach (var item in finallist)
+                {
+                    item.Rank = position;
+                    item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(PlantIds.Count())) * 100);
+                    item.CreatedOn = date;
+                    item.UpdatedOn = date;
+                    position++;
+                }
+                _misc.FinalRanking(finallist);
+            }
         }
 
         public override void CheckDeviceFaults()

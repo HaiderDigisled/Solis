@@ -20,7 +20,7 @@ namespace Services.Mediator.Providers.Vendors
         private readonly IGrowWattRepository _growWatt;
         private readonly IMiscRepository _misc;
         private Helper helper;
-        private IEnumerable<int> PlantIds;
+        private IEnumerable<string> PlantIds;
         private List<APISuccessResponses> apiresponses;
         private EnergyGraphMapper mapper;
         private List<GrowWattDevice> deviceInformation;
@@ -70,7 +70,7 @@ namespace Services.Mediator.Providers.Vendors
             Console.WriteLine("API Responses Inserted");
         }
 
-        private void GetPlantGraph(int plantid, string StartDate, string EndDate)
+        private void GetPlantGraph(string plantid, string StartDate, string EndDate)
         {
             string[] graphTypes = { "month", "day", "year" };
             var WeekRange = helper.GetWeeklyRange(StartDate, EndDate);

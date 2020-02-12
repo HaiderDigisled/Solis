@@ -20,7 +20,7 @@ namespace Services.Mediator.Providers.Vendors
         private readonly IGraphRepository _graph;
         private readonly ISunGrowRepository _sungrow;
         private readonly IMiscRepository _misc;
-        private IEnumerable<int> PlantIds;
+        private IEnumerable<string> PlantIds;
         private List<APISuccessResponses> apiresponses;
         private EnergyGraphMapper mapper;
 

@@ -8,7 +8,7 @@ namespace Data.Model
 {
     public class SunGrowPlantInformation
     {
-        public int PowerStationId { get; set; }
+        public string PowerStationId { get; set; }
         public int? PowerStationCountryId { get; set; }
         public int is_bank_ps { get; set; }
         public string ZipCode { get; set; }
