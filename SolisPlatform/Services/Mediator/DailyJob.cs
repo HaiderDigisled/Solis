@@ -57,7 +57,6 @@ namespace Services.Mediator
                     }
 
                     Vendor = Factory.Create();
-                    if (vendor.Name == "GrowWatt") {
                         #region Energy Graph Recovery
                         Vendor.GetPlants();
                         Vendor.SaveAPIResponses();
@@ -66,7 +65,6 @@ namespace Services.Mediator
                         Vendor.UpdatePlantsStatus();
                         Vendor.CheckDeviceFaults();
                         #endregion
-                    }
 
 
                 }
