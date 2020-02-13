@@ -52,19 +52,19 @@ namespace Services.Mediator
                             Factory = new SunGrowFactory(_graph, _sunGrow, _misc);
                             break;
                         case "GoodWee":
-                            Factory = new GoodWeeFactory(_graph,_goodWee,_misc);
+                            Factory = new GoodWeeFactory(_graph, _goodWee, _misc);
                             break;
                     }
 
                     Vendor = Factory.Create();
-                        #region Energy Graph Recovery
-                        Vendor.GetPlants();
-                        Vendor.SaveAPIResponses();
-                        Vendor.SaveEnergyGraph(vendor.Name);
-                        Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
-                        Vendor.UpdatePlantsStatus();
-                        Vendor.CheckDeviceFaults();
-                        #endregion
+                    #region Energy Graph Recovery
+                    Vendor.GetPlants();
+                    Vendor.SaveAPIResponses();
+                    Vendor.SaveEnergyGraph(vendor.Name);
+                    Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
+                    Vendor.UpdatePlantsStatus();
+                    Vendor.CheckDeviceFaults();
+                    #endregion
 
 
                 }

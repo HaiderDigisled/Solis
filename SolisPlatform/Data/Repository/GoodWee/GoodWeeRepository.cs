@@ -41,7 +41,7 @@ namespace Data.Repository.GoodWee
         {
             try
             {
-                string query = $"update PlantInformation set IsHistoric=1 where PlantId= {PlantId}";
+                string query = $"update PlantInformation set IsHistoric=1 where PlantId= '{PlantId}'";
                 dapper.Execute<int>(query,null,null,true,null,System.Data.CommandType.Text);
             }
             catch (Exception ex) {

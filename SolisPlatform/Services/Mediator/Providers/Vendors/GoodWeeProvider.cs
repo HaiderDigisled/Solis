@@ -129,25 +129,27 @@ namespace Services.Mediator.Providers.Vendors
             {
                 foreach (var plant in PlantIds)
                 {
-                    if (!plant.IsHistoric)
-                    {
-                        helper = new Helper();
-                        var weeklyRange = helper.GetWeeklyRange(plant.CreatedTime.Split('T')[0], DateTime.Now.ToString("yyyy-MM-dd"));
-                        foreach (var week in weeklyRange)
-                        {
-                            GetPlantDetails(plant.PlantId, week.EndDate, "0"); // Get Daily Stats
-                        }
+                    //if (!plant.IsHistoric)
+                    //{
+                    //    helper = new Helper();
+                    //    var weeklyRange = helper.GetWeeklyRange(plant.CreatedTime.Split('T')[0], DateTime.Now.ToString("yyyy-MM-dd"));
+                    //    foreach (var week in weeklyRange)
+                    //    {
+                    //        GetPlantDetails(plant.PlantId, week.EndDate, "0"); // Get Daily Stats
+                    //    }
 
-                        GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), "1"); // Get Monthly Stats
-                        _goodWee.MarkPlantHistoric(plant.PlantId);
+                    //    GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), "1"); // Get Monthly Stats
+                    //    _goodWee.MarkPlantHistoric(plant.PlantId);
+                    //}
+                    //else {
+                    string[] types = { "0", "1" };
+                    foreach (var type in types)
+                    {
+                        Console.WriteLine($"Recovering GoodWee Plant {plant.PlantId}");
+                        GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), type);
+                        Console.WriteLine($"GoodWee Plant Recovered {plant.PlantId}");
                     }
-                    else {
-                        string[] types = { "0", "1" };
-                        foreach (var type in types)
-                        {
-                            GetPlantDetails(plant.PlantId, DateTime.Now.ToString("yyyy-MM-dd"), type);
-                        }
-                    }
+                    //}
                 }
             }
             catch (Exception ex)
@@ -174,7 +176,7 @@ namespace Services.Mediator.Providers.Vendors
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("token", GoodWee.data.token);
                 request.AddHeader("Content-Type", "application/json");
-                request.AddParameter("application/json", "{\n    \"plant_id\": \""+PlantId+"\",\n    \"date\": \""+Date+"\",\n    \"type\":"+type+"\n    \n    \n}", ParameterType.RequestBody);
+                request.AddParameter("application/json", "{\n    \"plant_id\": \"" + PlantId + "\",\n    \"date\": \"" + Date + "\",\n    \"type\":" + type + "\n    \n    \n}", ParameterType.RequestBody);
                 IRestResponse response = client.Execute(request);
                 if (response.IsSuccessful)
                 {
@@ -182,7 +184,7 @@ namespace Services.Mediator.Providers.Vendors
                     {
                         plantId = PlantId,
                         Provider = "GoodWee",
-                        APIMethod = String.Concat("getHistoryInfo", "_", type == "0" ? "Day ": "Month"),
+                        APIMethod = String.Concat("getHistoryInfo", "_", type == "0" ? "Day " : "Month"),
                         response = response.Content,
                         Hour = DateTime.Now.Hour,
                         Mapped = 0
