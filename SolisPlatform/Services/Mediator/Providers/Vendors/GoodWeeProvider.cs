@@ -52,7 +52,8 @@ namespace Services.Mediator.Providers.Vendors
                                         SunHours = pd.SunHours,
                                         UserId = pd.UserId,
                                         VendorType = pd.VendorType,
-                                        PlantCapacity = pc.PlantCapacity
+                                        PlantCapacity = pc.PlantCapacity,
+                                        PlantType = pd.PlantType
                                     };
             if (RankingDetailView.Count() > 0)
             {
@@ -77,8 +78,10 @@ namespace Services.Mediator.Providers.Vendors
 
                 foreach (var item in finallist)
                 {
+                    var plantType = RankingDetailView.Where(y => y.PlantId == item.PlantId).Select(z => z.PlantType).FirstOrDefault();
+                    var pool = RankingDetailView.Where(x => x.PlantType.Equals(plantType)).Count() + 1;
                     item.Rank = position;
-                    item.RankingPercentage = Convert.ToDecimal((1 - position / Convert.ToDouble(PlantIds.Count())) * 100);
+                    item.RankingPercentage = 100 - Convert.ToDecimal((position / Convert.ToDouble(pool)) * 100);
                     item.CreatedOn = date;
                     item.UpdatedOn = date;
                     position++;

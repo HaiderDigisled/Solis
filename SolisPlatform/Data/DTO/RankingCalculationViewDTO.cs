@@ -18,5 +18,6 @@ namespace Data.DTO
         public string RateMonthDateTime { get; set; }
         public decimal Energy { get; set; }
         public decimal PlantCapacity { get; set; }
+        public string PlantType { get; set; }
     }
 }
