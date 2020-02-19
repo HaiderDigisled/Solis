@@ -6,6 +6,7 @@ using Data.Mappers;
 using Data.Model;
 using Newtonsoft.Json;
 using RestSharp;
+using Services.Mediator.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,9 +150,8 @@ namespace Services.Mediator.Providers.Vendors
 
         public override void CalculateRanking()
         {
-            List<Ranking> ranking = new List<Ranking>();
-            var PlantDetails = _misc.CalculateRanking(PlantIds, "SunGrow");
-            var PlantCapacity = _misc.GetPlantsCapacity("SunGrowPlantInformation", "DesignCapacity", "PowerStationId", PlantIds);
+            var PlantDetails = _misc.CalculateRanking(PlantIds, "GrowWatt");
+            var PlantCapacity = _misc.GetPlantsCapacity("GrowWattPlantInformation", "PeakPower", "PlantId", PlantIds);
             var RankingDetailView = from pd in PlantDetails
                                     join pc in PlantCapacity
                                     on pd.PlantId equals pc.PlantId
@@ -168,38 +168,7 @@ namespace Services.Mediator.Providers.Vendors
                                         PlantCapacity = pc.PlantCapacity,
                                         PlantType = pd.PlantType
                                     };
-            if (RankingDetailView.Count() > 0) {
-                foreach (var item in RankingDetailView)
-                {
-                    decimal TargetEnergy = item.SunHours * item.PlantCapacity;
-                    decimal TargetAchieved;
-                    if (TargetEnergy > 0)
-                    {
-                        TargetAchieved = item.Energy / TargetEnergy;
-                    }
-                    else
-                    {
-                        TargetAchieved = 0;
-                    }
-                    ranking.Add(new Ranking { PlantId = item.PlantId, RankingPercentage = TargetAchieved });
-                }
-
-                var finallist = ranking.OrderByDescending(x => x.RankingPercentage).ToList();
-                int position = 1;
-                var date = DateTime.Now;
-
-                foreach (var item in finallist)
-                {
-                    var plantType = RankingDetailView.Where(y => y.PlantId == item.PlantId).Select(z => z.PlantType).FirstOrDefault();
-                    var pool = RankingDetailView.Where(x => x.PlantType.Equals(plantType)).Count() + 1;
-                    item.Rank = position;
-                    item.RankingPercentage = 100 - Convert.ToDecimal((position / Convert.ToDouble(pool)) * 100);
-                    item.CreatedOn = date;
-                    item.UpdatedOn = date;
-                    position++;
-                }
-                _misc.FinalRanking(finallist);
-            }
+            CommonOperations.RankingDetailView.AddRange(RankingDetailView);
         }
 
         public override void UpdatePlantsStatus()

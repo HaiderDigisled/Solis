@@ -5,6 +5,7 @@ using Data.Contracts.SunGrow;
 using Data.Repository;
 using Foundation.AlertConfiguration;
 using Services.Mediator.Factory.Vendors;
+using Services.Mediator.Helpers;
 using Services.Mediator.Providers.Vendors;
 using System;
 using System.Collections.Generic;
@@ -58,18 +59,16 @@ namespace Services.Mediator
 
                     Vendor = Factory.Create();
                     #region Energy Graph Recovery
-                        Vendor.GetPlants();
-                        Vendor.SaveAPIResponses();
-                        Vendor.SaveEnergyGraph(vendor.Name);
-                        Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
-                        Vendor.UpdatePlantsStatus();
-                        Vendor.CheckDeviceFaults();
-                    
+                    Vendor.GetPlants();
+                    Vendor.SaveAPIResponses();
+                    Vendor.SaveEnergyGraph(vendor.Name);
+                    Vendor.CalculateRanking();  // TODO : Refactoring Needed for CalculateRanking, Create New Repo for Ranking and move all misc repo code to Ranking Repo
+                    Vendor.UpdatePlantsStatus();
+                    Vendor.CheckDeviceFaults();
+
                     #endregion
-
-
                 }
-
+                CommonOperations.CalculateAllProvidersRanking();
             }
             catch (Exception ex)
             {

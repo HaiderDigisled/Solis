@@ -19,9 +19,8 @@ namespace Data.Repository
         }
         public IEnumerable<RankingCalculationViewDTO> CalculateRanking(IEnumerable<string> PlantIds,string Provider)
         {
-            var plantids = string.Join(",", PlantIds.ToList());
-            plantids = string.Concat("'",plantids.Replace(",","','"),"'");
-            string query = $"select * from RankingCalculationView with (nolock) where PlantId in ({plantids})";
+          
+            string query = $"select * from RankingCalculationView";
             try
             {
                 var result = dapper.Get<RankingCalculationViewDTO>(query, null, null, true, null, System.Data.CommandType.Text);

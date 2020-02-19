@@ -54,6 +54,7 @@
     <Compile Include="Mediator\Factory\Vendors\GrowWattFactory.cs" />
     <Compile Include="Mediator\Factory\Vendors\SunGrowFactory.cs" />
     <Compile Include="Mediator\Factory\Vendors\VendorFactory.cs" />
+    <Compile Include="Mediator\Helpers\CommonOperations.cs" />
     <Compile Include="Mediator\IDailyJob.cs" />
     <Compile Include="Mediator\Providers\Vendors\GoodWeeProvider.cs" />
     <Compile Include="Mediator\Providers\Vendors\GrowWattProvider.cs" />
